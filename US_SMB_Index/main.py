@@ -1,16 +1,34 @@
-# This is a sample Python script.
+import yfinance as yf
+import pandas as pd
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+def fetch_stock_data(ticker):
+    """
+    Fetch historical stock data for the given ticker.
+    :param ticker: Stock ticker symbol as a string.
+    :return: Pandas DataFrame with historical stock data.
+    """
+    stock = yf.Ticker(ticker)
+    hist = stock.history(period="1mo")  # Adjust period as needed
+    return hist
 
+def calculate_volatility(hist):
+    """
+    Calculate the volatility of a stock based on historical data.
+    :param hist: Pandas DataFrame with historical stock data.
+    :return: Float representing the stock's volatility.
+    """
+    return hist['Close'].pct_change().std()
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+def categorize_risk(hist):
+    """
+    Categorize stock into risk categories based on volatility.
+    :param hist: Pandas DataFrame with historical stock data.
+    :return: String representing the risk category.
+    """
+    volatility = calculate_volatility(hist)
+    if volatility < 0.01:
+        return 'Low'
+    elif volatility < 0.02:
+        return 'Medium'
+    else:
+        return 'High'
